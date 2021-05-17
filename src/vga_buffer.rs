@@ -3,8 +3,6 @@ use lazy_static::lazy_static;
 use spin::Mutex;
 use core::fmt;
 
-use crate::println;
-
 lazy_static! {   
 
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
