@@ -1,7 +1,7 @@
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 
 use lazy_static::lazy_static;
-use crate::{println};
+use crate::{println, print};
 use crate::gdt;
 use pic8259_simple::ChainedPics;
 
@@ -43,7 +43,10 @@ extern "x86-interrupt" fn double_fault_handler(
 extern "x86-interrupt" fn timer_interrupt_handler (
     _stack_frame: &mut InterruptStackFrame
 ) {
-    println!(".");
+    print!(".");
+    unsafe {
+        PICS.lock().notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
