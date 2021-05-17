@@ -13,7 +13,7 @@ pub extern "C" fn _start() -> ! {
     oxid_os::gdt::init();
     init_test_idt();
     stack_overflow();
-    panic!("Execution continue after stack overflow");}
+    panic!("Execution continued after stack overflow");}
 
 
 #[allow(unconditional_recursion)]
@@ -40,7 +40,7 @@ lazy_static! {
 }
 
 extern "x86-interrupt" fn test_double_fault_handler(
-    _stack_frame: InterruptStackFrame,
+    _stack_frame: &mut InterruptStackFrame,
     _error_code: u64
 ) -> ! {
     serial_println!("[ok]");
