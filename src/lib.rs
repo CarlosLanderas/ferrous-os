@@ -46,14 +46,12 @@ fn panic(info: &PanicInfo) -> ! {
     test_panic_handler(info)
 }
 
-
 pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[failed]\n");
     serial_println!("Errpr: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
     loop {}
 }
-
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
