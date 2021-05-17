@@ -59,12 +59,6 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     }
 }
 
-
-#[test_case]
-fn trivial_assertion() {
-    assert_eq!(1,1);
-}
-
 pub trait Testable {
     fn run(&self) -> ();
 }
