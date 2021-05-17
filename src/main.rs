@@ -6,8 +6,8 @@
 
 use core::panic::PanicInfo;
 use bootloader::{BootInfo, entry_point};
-use oxid_os::{memory::active_level4_table, println};
-use x86_64::VirtAddr;
+use oxid_os::{println};
+use x86_64::{VirtAddr, structures::paging::Translate};
 
 entry_point!(kernel_main);
 
@@ -18,13 +18,21 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     
     oxid_os::init();
 
+    println!("Physical memory offset: 0x{:x}", boot_info.physical_memory_offset);
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
-    let l4_table = unsafe { active_level4_table(phys_mem_offset)};
+    let mapper = unsafe { oxid_os::memory::init(phys_mem_offset)};
+    let addresses = [        
+        0xb8000,        
+        0x201008,        
+        0x0100_0020_1a10,        
+        boot_info.physical_memory_offset,
+    ];
 
-    for(i, entry) in l4_table.iter().enumerate() {
-        if !entry.is_unused() {
-            println!("L4 Entry {}: {:?}", i, entry);
-        }
+    for &address in &addresses {
+        let virt = VirtAddr::new(address);
+        let phys = mapper.translate_addr(virt);
+        println!("{:?} -> {:?}", virt, phys);
+
     }
 
     #[cfg(test)]
