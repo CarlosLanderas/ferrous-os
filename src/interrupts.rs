@@ -3,7 +3,7 @@ use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use lazy_static::lazy_static;
 use crate::{println, print};
 use crate::gdt;
-use pic8259_simple::ChainedPics;
+use pic8259::ChainedPics;
 
 pub const PIC_1_OFFSET : u8 = 32;
 pub const PIC_2_OFFSET : u8 = PIC_1_OFFSET + 8;
@@ -30,19 +30,19 @@ pub fn init_idt() {
 }
 
 extern "x86-interrupt" fn breakpoint_handler(
-    stack_frame: &mut InterruptStackFrame)
+    stack_frame: InterruptStackFrame)
 {
     println!("EXCEPTION: BREAKPOING\n:{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn double_fault_handler(
-    stack_frame: &mut InterruptStackFrame, _error_code: u64) -> !
+    stack_frame: InterruptStackFrame, _error_code: u64) -> !
 {
    panic!("EXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler (
-    _stack_frame: &mut InterruptStackFrame
+    _stack_frame: InterruptStackFrame
 ) {
     print!(".");
     unsafe {
@@ -51,7 +51,7 @@ extern "x86-interrupt" fn timer_interrupt_handler (
 }
 
 extern "x86-interrupt" fn keyboard_interrupt_handler(
-    _stack_frame: &mut InterruptStackFrame
+    _stack_frame: InterruptStackFrame
 ) {
     use x86_64::instructions::port::Port;
     use spin::Mutex;
