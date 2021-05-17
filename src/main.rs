@@ -11,6 +11,8 @@ use oxid_os::println;
 pub extern "C" fn _start() -> ! {
     println!("Hello World{}", "!");
     
+    oxid_os::init();
+
     #[cfg(test)]
     test_main();
 
